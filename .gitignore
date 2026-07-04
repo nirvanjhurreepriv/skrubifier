@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# Data: keep example 04's real parquet (small, the one real-data pipeline),
+# ignore everything else — synthetic CSVs are regenerable
+*.csv
+*.parquet
+!examples/04_nyc_taxi_fare/data/*.parquet
+skrubifier_report.*
+skrubifier_deck.pptx

@@ -1,0 +1,157 @@
+# Skrubifier
+
+> **Reviewers:** start with [`WRITEUP.md`](WRITEUP.md) — it synthesises the
+> whole project (architecture, results, bugs found, limitations) in one place.
+
+LLM-assisted conversion of tabular ML pipelines (scikit-learn `Pipeline`/
+`ColumnTransformer`, XGBoost/LightGBM/CatBoost wrappers, manual pandas
+feature-engineering scripts) into the **skrub DataOps** API
+(`skrub.var`, `.skb.apply`, `.skb.mark_as_X/y`, `.skb.make_learner`, ...).
+
+## Why this is hard to do with a single LLM prompt
+
+Naively pasting a pipeline into an LLM and asking for "the skrub DataOps
+version" fails in practice because:
+
+1. skrub DataOps is a **build-time DAG** (like a lazy computation graph), not
+   an eager `fit`/`transform` API — the LLM has to convert *control flow*
+   (loops, `if`s, manual joins) into DAG-building calls, not just rename
+   functions.
+2. Real Kaggle/MLE-Bench solutions mix pandas munging, custom functions,
+   multiple tables, CV loops, ensembling and leakage-prone tricks that have
+   no 1:1 skrub primitive.
+3. Correctness has to be checked *numerically* (do the two pipelines produce
+   the same predictions / CV score), not just "does it parse".
+
+Skrubifier addresses this with a **3-stage, tool-assisted pipeline** rather
+than a single LLM call:
+
+```
+source pipeline (.py / .ipynb)
+        │
+        ▼
+ ┌─────────────────┐   AST + runtime introspection of the sklearn
+ │ 1. ANALYZER      │   Pipeline / ColumnTransformer / model objects.
+ │  analyzer.py     │   Produces a structured IR (JSON) describing steps,
+ │                  │   column groups, estimators, hyperparameters, and
+ │                  │   any custom transform code found via AST.
+ └─────────────────┘
+        │  IR (PipelineIR)
+        ▼
+ ┌─────────────────┐   LLM (Claude) is prompted with (a) the IR, (b) a
+ │ 2. CONVERTER     │   condensed skrub DataOps API reference + few-shot
+ │  converter.py    │   examples, (c) the IR->code contract. Emits a
+ │                  │   candidate skrub_dataops.py script.
+ └─────────────────┘
+        │  candidate script
+        ▼
+ ┌─────────────────┐   Executes original pipeline and candidate script on
+ │ 3. VALIDATOR     │   the same held-out split; compares predictions
+ │  validator.py    │   (correlation / exact match / metric delta) and
+ │                  │   checks the script imports & runs cleanly. Failures
+ │                  │   are fed back to the LLM for up to N repair rounds.
+ └─────────────────┘
+        │
+        ▼
+  runnable skrub DataOps script + validation report
+```
+
+## Package layout
+
+```
+skrubifier/
+  analyzer.py     # sklearn Pipeline/ColumnTransformer -> PipelineIR (dataclasses)
+  ir.py           # IR dataclass definitions (shared contract between stages)
+  prompts.py      # System prompt / API reference / few-shot examples for the LLM
+  converter.py    # Calls the LLM with the IR, extracts code, orchestrates repair loop
+  validator.py    # Executes + compares original vs converted pipeline
+  cli.py          # `python -m skrubifier convert pipeline.py --out out.py`
+examples/
+  01_titanic/           # sklearn Pipeline -> skrub DataOps, single table
+  02_house_prices/       # ColumnTransformer + XGBoost, single table
+  03_credit_fraud_multitable/  # two tables + groupby aggregation + join
+  PLAN.md                # remaining 7 target pipelines from MLE-Bench/Kaggle
+tests/
+  test_analyzer.py
+  test_validator.py
+```
+
+## Relationship to stratum
+
+[deem-data/stratum](https://github.com/deem-data/stratum) is **not a
+different target syntax** — it's a drop-in accelerated runtime for the same
+skrub DataOps operator abstraction (`import stratum as skrub`), adding a
+Rust backend, a cost-based optimizer, and a scheduler on top of the
+identical `.skb.var/.apply/.mark_as_X/.make_learner` API this framework
+already targets. Consequences for this deliverable:
+
+- No separate conversion path is needed. Every script `converter.py`
+  produces already targets stratum, since it targets skrub DataOps syntax.
+- Generated scripts use `try: import stratum as skrub / except ImportError:
+  import skrub` (see `prompts.STRATUM_NOTE`) so the same file runs on
+  either, and prefers stratum's Rust backend when installed.
+- `validator.dynamic_check(..., use_stratum=True)` sets
+  `STRATUM_RUST_BACKEND=1` in the subprocess environment so the dynamic
+  validation run picks up stratum automatically if present, without any
+  code path divergence from the plain-skrub case.
+- Stratum currently has no pip wheel (built from source via
+  `maturin develop --release`, requires Rust toolchain + Python 3.12+) — not
+  installable in this sandbox, so the "runs on stratum" claim is
+  syntax-level (verified: stratum re-exports the exact DataOps operators
+  used in all 3 worked examples) rather than execution-verified here; that
+  last step needs to happen in an environment where stratum is built.
+
+
+
+## Data sourcing vs. pipeline sourcing
+
+The assignment requires source *pipelines* to come from MLE-Bench and
+Kaggle — it does not require runtime *data* to be the original competition
+data. All 10 pipelines in this project are adapted from real, published
+MLE-Bench/Kaggle solutions (see each `source_pipeline.py`'s docstring for
+its specific source). Runtime data is real where available (example 04,
+NYC Taxi Fare, ships with actual competition data) and synthetic — matched
+to the original dataset's column names, dtypes, and approximate
+distributional shape — where the real dataset wasn't downloadable in this
+environment (examples 01–03, 05–10; see `results/evaluation_table.md` for
+the per-pipeline breakdown). This is disclosed per-pipeline rather than
+uniformly, since synthetic data affects the strength of the correctness
+evidence differently across pipelines — e.g. example 08's synthetic text
+being perfectly separable produced a ceiling-effect result (AUC=1.0 both
+sides) that demonstrates less than a comparable real-data result would.
+
+## LLM backend for the converter
+
+The converter is LLM-agnostic (`llm_call: Callable[[str], str]`). Two
+factories are provided:
+
+- **`default_openai_compatible_llm_call()`** — default. Targets GWDG/
+  AcademicCloud's SAIA service (`https://chat-ai.academiccloud.de/v1`), a
+  free, OpenAI-compatible endpoint serving open-weight models hosted in
+  Germany. Get an AcademicCloud ID + SAIA API key via the KISSKI LLM Service
+  booking page, then `export GWDG_API_KEY=...` and `pip install openai`.
+- **`default_anthropic_llm_call()`** — targets the Anthropic API directly.
+  Requires `pip install anthropic` and `ANTHROPIC_API_KEY`.
+
+```bash
+python -m skrubifier convert examples/05_x/source_pipeline.py --out out.py            # gwdg (default)
+python -m skrubifier convert examples/05_x/source_pipeline.py --out out.py --backend anthropic
+```
+
+## Status of this deliverable
+
+- Framework code: **static/AST paths executed and passing** (8/8 tests in
+  `tests/`, run without network access; no `pip install skrub` available in
+  this sandbox — dynamic/execution validation still needs to run in an
+  environment with skrub + stratum installed).
+- 4 of 10 pipelines: **fully worked conversion examples** (source +
+  hand-verified converted DataOps script + validation harness). #4
+  (`04_nyc_taxi_fare`) is built from a real, official skrub DataOps tutorial
+  notebook with actual data included — its converted script is adapted
+  directly from skrub's own reference implementation rather than
+  LLM-generated, so it doubles as a ground-truth regression anchor and
+  already caught/corrected one inaccuracy in the framework's own API
+  reference (see `prompts.py`'s `.skb.apply_func()` note).
+- Remaining 6: specified in `examples/PLAN.md` with source, target IR shape,
+  and known conversion hazards, ready to run through `converter.py` once API
+  + network access is available.

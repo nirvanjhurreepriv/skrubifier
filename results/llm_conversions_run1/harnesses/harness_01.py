@@ -1,0 +1,33 @@
+"""Adapted harness for LLM-generated 01_titanic.py (uses skrub.var("df", ...))."""
+import json, os, runpy, sys
+import pandas as pd
+from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import train_test_split
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../examples/01_titanic"))
+os.chdir(os.path.join(os.path.dirname(__file__), "../../../examples/01_titanic"))
+
+try:
+    import stratum
+    if os.environ.get("STRATUM_RUST_BACKEND") == "1":
+        stratum.set_config(rust_backend=True, scheduler=True, stats=True)
+except ImportError:
+    pass
+
+from source_pipeline import PIPELINE, FEATURE_COLUMNS, TARGET_COLUMN
+
+df = pd.read_csv("train.csv")
+train_df, test_df = train_test_split(df, test_size=0.2, random_state=0, stratify=df[TARGET_COLUMN])
+
+PIPELINE.fit(train_df[FEATURE_COLUMNS], train_df[TARGET_COLUMN])
+orig_proba = PIPELINE.predict_proba(test_df[FEATURE_COLUMNS])[:, 1]
+original_metric = roc_auc_score(test_df[TARGET_COLUMN], orig_proba)
+
+converted_path = sys.argv[1]
+ns = runpy.run_path(converted_path, run_name="__converted__")
+learner = ns["learner"]
+learner.fit({"df": train_df})
+conv_proba = learner.predict_proba({"df": test_df})[:, 1]
+converted_metric = roc_auc_score(test_df[TARGET_COLUMN], conv_proba)
+
+print(json.dumps({"original_metric": original_metric, "converted_metric": converted_metric}))

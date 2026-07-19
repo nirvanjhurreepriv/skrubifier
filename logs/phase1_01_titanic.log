@@ -1,0 +1,8 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/01_titanic/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/examples/01_titanic/converted_dataops.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/01_titanic
+RETURNCODE: 0
+--- STDOUT ---
+{"original_metric": 0.7190154922538731, "converted_metric": 0.7107696151924039}
+
+--- STDERR ---
+

@@ -1,0 +1,8 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/04_nyc_taxi_fare/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/examples/04_nyc_taxi_fare/converted_dataops.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/04_nyc_taxi_fare
+RETURNCODE: 0
+--- STDOUT ---
+{"original_metric": 0.6561350813842909, "converted_metric": 0.656135081384291}
+
+--- STDERR ---
+

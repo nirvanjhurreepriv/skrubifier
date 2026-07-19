@@ -1,0 +1,25 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python -m pytest tests/ -v
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier
+RETURNCODE: 0
+--- STDOUT ---
+============================= test session starts ==============================
+platform darwin -- Python 3.10.4, pytest-9.1.1, pluggy-1.6.0 -- /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/nirvanjhurree19/Desktop/skrubifier
+plugins: anyio-4.14.1
+collecting ... collected 9 items
+
+tests/test_analyzer.py::test_estimator_analyzer_captures_column_groups PASSED [ 11%]
+tests/test_analyzer.py::test_estimator_analyzer_tags_every_step_in_a_branch PASSED [ 22%]
+tests/test_analyzer.py::test_ir_is_json_serializable PASSED              [ 33%]
+tests/test_analyzer.py::test_ast_fallback_finds_groupby_and_merge_steps PASSED [ 44%]
+tests/test_analyzer.py::test_static_check_accepts_all_hand_written_converted_scripts PASSED [ 55%]
+tests/test_analyzer.py::test_static_check_rejects_eager_sklearn_masquerading_as_dataops PASSED [ 66%]
+tests/test_analyzer.py::test_static_check_rejects_syntax_errors PASSED   [ 77%]
+tests/test_analyzer.py::test_estimator_analyzer_on_nyc_taxi_example PASSED [ 88%]
+tests/test_analyzer.py::test_estimator_analyzer_captures_stacking_base_estimators PASSED [100%]
+
+============================== 9 passed in 2.60s ===============================
+
+--- STDERR ---
+

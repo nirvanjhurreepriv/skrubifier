@@ -1,0 +1,58 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/06_allstate_claims_severity/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/results/llm_conversions/06_allstate_claims_severity.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/06_allstate_claims_severity
+RETURNCODE: 1
+--- STDOUT ---
+
+--- STDERR ---
+Traceback (most recent call last):
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py", line 413, in checked_call
+    evaluate(data_op, mode="preview", environment=None)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 484, in evaluate
+    return _Evaluator(mode=mode, environment=environment, callbacks=callbacks).run(
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 317, in run
+    return super().run(data_op)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 208, in run
+    step()
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 190, in step
+    new_top = top.generator.send(last_result)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 353, in handle_data_op
+    result = yield from self._eval_data_op(data_op)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 366, in _eval_data_op
+    yield from impl.eval(mode=self.mode, environment=self.environment)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py", line 1468, in eval
+    return getattr(self.estimator_, method_name)(X, *y_arg, **method_kwargs)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/sklearn/utils/_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/sklearn/base.py", line 894, in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_select_cols.py", line 66, in fit
+    self.columns_ = s.make_selector(self.cols).expand(X)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/selectors/_base.py", line 377, in expand
+    missing = set(self.columns).difference(sbd.column_names(df))
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/functools.py", line 889, in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_dataframe/_common.py", line 543, in column_names
+    raise_dispatch_unregistered_type(df, kind="DataFrame")
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_dispatch.py", line 271, in raise_dispatch_unregistered_type
+    raise TypeError(
+TypeError: Operation not supported on this object. Expecting a Pandas or Polars DataFrame, but got an object of type <class 'pandas.core.series.Series'>.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/examples/06_allstate_claims_severity/harness.py", line 47, in <module>
+    ns = runpy.run_path(converted_path, run_name="__converted__")
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 269, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 96, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/results/llm_conversions/06_allstate_claims_severity.py", line 51, in <module>
+    xgb_df = xgb_pred.skb.select(["pred"]).to_pandas()
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py", line 418, in checked_call
+    raise RuntimeError(
+RuntimeError: Evaluation of 'select()' failed.
+You can see the full traceback above. The error message was:
+TypeError: Operation not supported on this object. Expecting a Pandas or Polars DataFrame, but got an object of type <class 'pandas.core.series.Series'>.
+

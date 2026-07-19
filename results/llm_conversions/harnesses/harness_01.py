@@ -1,4 +1,4 @@
-"""Adapted harness for LLM-generated 01_titanic.py (uses skrub.var("df", ...))."""
+"""Adapted harness for LLM-generated 01_titanic.py (uses skrub.var("titanic", ...))."""
 import json, os, runpy, sys
 import pandas as pd
 from sklearn.metrics import roc_auc_score
@@ -26,8 +26,8 @@ original_metric = roc_auc_score(test_df[TARGET_COLUMN], orig_proba)
 converted_path = sys.argv[1]
 ns = runpy.run_path(converted_path, run_name="__converted__")
 learner = ns["learner"]
-learner.fit({"df": train_df})
-conv_proba = learner.predict_proba({"df": test_df})[:, 1]
+learner.fit({"titanic": train_df})
+conv_proba = learner.predict_proba({"titanic": test_df})[:, 1]
 converted_metric = roc_auc_score(test_df[TARGET_COLUMN], conv_proba)
 
 print(json.dumps({"original_metric": original_metric, "converted_metric": converted_metric}))

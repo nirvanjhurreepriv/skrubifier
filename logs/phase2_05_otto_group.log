@@ -1,0 +1,50 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/05_otto_group/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/results/llm_conversions/05_otto_group.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/05_otto_group
+RETURNCODE: 1
+--- STDOUT ---
+
+--- STDERR ---
+Traceback (most recent call last):
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py", line 413, in checked_call
+    evaluate(data_op, mode="preview", environment=None)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 484, in evaluate
+    return _Evaluator(mode=mode, environment=environment, callbacks=callbacks).run(
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 317, in run
+    return super().run(data_op)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 208, in run
+    step()
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 190, in step
+    new_top = top.generator.send(last_result)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 353, in handle_data_op
+    result = yield from self._eval_data_op(data_op)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_evaluation.py", line 366, in _eval_data_op
+    yield from impl.eval(mode=self.mode, environment=self.environment)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py", line 1412, in eval
+    self.estimator_ = _wrap_estimator(
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py", line 885, in _wrap_estimator
+    _check_estimator_type(estimator)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py", line 849, in _check_estimator_type
+    raise TypeError(
+TypeError: The `estimator` passed to `.skb.apply()` should be a scikit-learn-like estimator. Got a function instead: <function preprocess at 0x11fb29000>.
+Did you mean to use `.skb.apply_func()` rather than `.skb.apply()`?
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/examples/05_otto_group/harness.py", line 54, in <module>
+    ns = runpy.run_path(converted_path, run_name="__converted__")
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 269, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 96, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/results/llm_conversions/05_otto_group.py", line 30, in <module>
+    data = data.skb.apply(preprocess)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py", line 418, in checked_call
+    raise RuntimeError(
+RuntimeError: Evaluation of 'apply()' failed.
+You can see the full traceback above. The error message was:
+TypeError: The `estimator` passed to `.skb.apply()` should be a scikit-learn-like estimator. Got a function instead: <function preprocess at 0x11fb29000>.
+Did you mean to use `.skb.apply_func()` rather than `.skb.apply()`?
+

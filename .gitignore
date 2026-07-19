@@ -5,9 +5,13 @@ __pycache__/
 .DS_Store
 
 # Data: keep example 04's real parquet (small, the one real-data pipeline),
-# ignore everything else — synthetic CSVs are regenerable
+# ignore everything else — synthetic CSVs are regenerable via make_data.py
 *.csv
 *.parquet
 !examples/04_nyc_taxi_fare/data/*.parquet
 skrubifier_report.*
 skrubifier_deck.pptx
+
+# Logs are committed as a submission deliverable (graders expect them)
+# so logs/ is NOT ignored.  Individual make_data log files are scratch.
+logs/make_data_*.log

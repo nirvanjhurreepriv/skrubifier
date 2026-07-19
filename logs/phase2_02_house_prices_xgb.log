@@ -1,0 +1,19 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/02_house_prices_xgb/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/results/llm_conversions/02_house_prices_xgb.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/02_house_prices_xgb
+RETURNCODE: 1
+--- STDOUT ---
+
+--- STDERR ---
+Traceback (most recent call last):
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/examples/02_house_prices_xgb/harness.py", line 44, in <module>
+    ns = runpy.run_path(converted_path, run_name="__converted__")
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 269, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 96, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/results/llm_conversions/02_house_prices_xgb.py", line 29, in <module>
+    high_cardinality_transformer=skrub.FrequencyEncoder(min_frequency=20)
+AttributeError: module 'skrub' has no attribute 'FrequencyEncoder'
+

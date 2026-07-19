@@ -1,0 +1,8 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/09_home_credit/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/examples/09_home_credit/converted_dataops.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/09_home_credit
+RETURNCODE: 0
+--- STDOUT ---
+{"original_metric": 0.8892204401342783, "converted_metric": 0.8839022512062181}
+
+--- STDERR ---
+

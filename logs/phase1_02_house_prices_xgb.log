@@ -1,0 +1,8 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/02_house_prices_xgb/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/examples/02_house_prices_xgb/converted_dataops.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/02_house_prices_xgb
+RETURNCODE: 0
+--- STDOUT ---
+{"original_metric": 0.7841037955110817, "converted_metric": 0.7890541371589042}
+
+--- STDERR ---
+

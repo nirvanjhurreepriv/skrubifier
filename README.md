@@ -2,6 +2,27 @@
 
 > **Reviewers:** start with [`WRITEUP.md`](WRITEUP.md) — it synthesises the
 > whole project (architecture, results, bugs found, limitations) in one place.
+>
+> **Reproducing results:** run `python run_experiments.py` from the repo root.
+> See [`EXPERIMENTS.md`](EXPERIMENTS.md) for the full reproduction guide.
+
+## Repository map
+
+| Path | What it is |
+|------|-----------|
+| `skrubifier/` | Framework source: `analyzer.py` (sklearn → IR), `converter.py` (LLM call + repair loop), `validator.py` (static + runtime checks), `prompts.py` (API reference + few-shot), `ir.py` (dataclasses), `cli.py` (entry point) |
+| `examples/0N_name/` | One pipeline per example: `source_pipeline.py`, `converted_dataops.py`, `harness.py`, `make_data.py` (reproducible data generator, seed=42) |
+| `examples/04_nyc_taxi_fare/data/` | Committed real parquet data (NYC Taxi; only real dataset) |
+| `results/` | `evaluation_table.md` (Phase 1), `phase2_evaluation_table.md` (Phase 2), LLM-generated scripts in `llm_conversions/` (Run 2) and `llm_conversions_run1/` (Run 1), adapted Phase 2 harnesses |
+| `tests/` | Offline unit tests for the Skrubifier framework (no network, no skrub execution) |
+| `run_experiments.py` | Single-command runner: regenerates data → runs tests → runs all harnesses → writes `logs/` |
+| `logs/` | Per-step log files and `summary.md` from the canonical run; committed as submission deliverable |
+| `EXPERIMENTS.md` | Full reproduction guide, pointer table, and LLM-step reproducibility statement |
+| `CONTRIBUTIONS.md` | (if present) Contribution log |
+| `WRITEUP.md` | Project overview, architecture, results, API bugs found, limitations |
+| `CHANGELOG.md` | Change log: every non-trivial modification with what, why, how-to-verify |
+
+---
 
 LLM-assisted conversion of tabular ML pipelines (scikit-learn `Pipeline`/
 `ColumnTransformer`, XGBoost/LightGBM/CatBoost wrappers, manual pandas
@@ -64,16 +85,26 @@ skrubifier/
   ir.py           # IR dataclass definitions (shared contract between stages)
   prompts.py      # System prompt / API reference / few-shot examples for the LLM
   converter.py    # Calls the LLM with the IR, extracts code, orchestrates repair loop
-  validator.py    # Executes + compares original vs converted pipeline
+  validator.py    # static_check() + runtime_check() + dynamic_check()
   cli.py          # `python -m skrubifier convert pipeline.py --out out.py`
 examples/
-  01_titanic/           # sklearn Pipeline -> skrub DataOps, single table
-  02_house_prices/       # ColumnTransformer + XGBoost, single table
-  03_credit_fraud_multitable/  # two tables + groupby aggregation + join
-  PLAN.md                # remaining 7 target pipelines from MLE-Bench/Kaggle
+  01_titanic/                        # sklearn Pipeline -> skrub DataOps, single table
+  02_house_prices_xgb/               # ColumnTransformer + XGBoost, single table
+  03_credit_fraud_multitable/        # two tables + groupby aggregation + join
+  04_nyc_taxi_fare/                  # real data; date features + geo; eval_mode filter
+  05_otto_group/ ... 10_santander/   # examples 05-10: various patterns
+  PLAN.md                            # design notes for all 10 pipelines
 tests/
   test_analyzer.py
-  test_validator.py
+results/
+  evaluation_table.md          # Phase 1 dynamic validation results
+  phase2_evaluation_table.md   # Phase 2 LLM conversion results
+  llm_conversions/             # Phase 2 Run 2 generated scripts
+  llm_conversions_run1/        # Phase 2 Run 1 generated scripts (for reference)
+  run2_harness_*.py            # Adapted harnesses for Phase 2 validation
+logs/
+  summary.md                   # Fresh-run metric table (from canonical run_experiments.py)
+  *.log                        # Per-step logs
 ```
 
 ## Relationship to stratum

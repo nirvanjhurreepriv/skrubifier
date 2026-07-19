@@ -5,6 +5,115 @@ records what, why, and how to verify. See `WRITEUP.md` for the project overview.
 
 ---
 
+## Reproducibility (2026-07-19)
+
+### [examples/0N_name/make_data.py — new] Deterministic data-generation scripts added for all 9 synthetic examples
+
+**What changed:** Created `make_data.py` in each of the nine synthetic-data
+examples (01, 02, 03, 05, 06, 07, 08, 09, 10). Each script uses
+`SEED = 42`, generates CSV data that matches the original dataset's column
+names, dtypes, and approximate distributional shape, and writes the file(s)
+to its own directory.
+
+- `01_titanic/make_data.py`     — logistic survival model (sex, pclass, age signal)
+- `02_house_prices_xgb/make_data.py` — log-normal SalePrice correlated with OverallQual + GrLivArea
+- `03_credit_fraud_multitable/make_data.py` — fraud baskets have higher cash_price means
+- `05_otto_group/make_data.py`  — Poisson count features, 9 classes with small Gaussian offsets
+- `06_allstate_claims_severity/make_data.py` — log-normal loss correlated with cont/cat features
+- `07_random_acts_of_pizza/make_data.py` — signal in numeric features (upvotes, days history); text is near-noise so TF-IDF ≈ MinHashEncoder
+- `08_spooky_author/make_data.py` — word-pool generation (65%/35% own/cross-class split) matching CHANGELOG spec
+- `09_home_credit/make_data.py` — bureau debt features correlated with default; numpy-only (no scipy)
+- `10_santander/make_data.py`   — 50 signal features with +0.05 mean shift; 150 noise
+
+**Why:** The `.gitignore` excludes `*.csv`; a fresh clone therefore had no
+data and could not run any harness. These scripts make the experiment
+fully reproducible from a clean clone using only committed code.
+
+**How to verify:**
+```
+python examples/01_titanic/make_data.py   # writes train.csv
+python run_experiments.py                 # regenerates all, then validates
+```
+
+---
+
+### [results/evaluation_table.md] Metrics updated from fresh regenerated data
+
+**What changed:** Rows 01, 03, 05, 06, 07 updated with metrics produced by
+running the Phase 1 harnesses on freshly generated (make_data.py, seed=42)
+data. Rows 02, 04, 08, 09, 10 were also refreshed for completeness (values
+within tolerance of the prior run). No tolerances were widened.
+
+| Example | Prior original | Fresh original | Prior pass? | Fresh pass? |
+|---------|---------------|----------------|-------------|-------------|
+| 01 Titanic | 0.768 | 0.719 | Pass | Pass (delta=0.008 < tol=0.022) |
+| 02 Houses | 0.772 | 0.784 | Pass | Pass (delta=0.005 < tol=0.024) |
+| 03 Credit Fraud | 0.850 | 0.968 | Pass | Pass (delta=0.000) |
+| 04 NYC Taxi | 0.656 | 0.656 | Pass | Pass (real data, unchanged) |
+| 05 Otto | 0.815 | 0.966 | Pass | Pass (delta=0.005 < tol=0.029) |
+| 06 Allstate | 0.644 | 0.518 | Fail | Fail (delta=0.037 > tol=0.020, same known cause) |
+| 07 Pizza | 0.638 | 0.805 | Pass | Pass (delta=0.002 < tol=0.024) |
+| 08 Spooky | 0.963 | 0.961 | Pass | Pass (delta=0.000) |
+| 09 Home Credit | 0.881 | 0.889 | Pass | Pass (delta=0.005 < tol=0.027) |
+| 10 Santander | 0.573 | 0.556 | Pass | Pass (delta=0.000) |
+
+**Why metric shifts occurred:** The new make_data.py scripts use different
+random seeds and generation strategies than the original ad-hoc data
+creation, producing different (but similarly structured) datasets.  The
+dynamic check compares original vs converted on the SAME dataset, so the
+property verified (conversion correctness) is unchanged. Data generation
+was not tuned to match prior numbers; discrepancies are honestly recorded
+here.
+
+---
+
+### [run_experiments.py — new] Single-command experiment runner created
+
+**What changed:** Created `run_experiments.py` at the repo root.
+
+Steps: (1) regenerate synthetic data, (2) run pytest, (3) run Phase 1
+harnesses, (4) re-validate saved Phase 2 LLM outputs, (5) write logs/
+and summary.
+
+**Why:** The July 29 submission requirement is: "We should be able to
+execute the provided scripts and reproduce the reported results."
+`run_experiments.py` is that single entry point.
+
+**How to verify:**
+```
+python run_experiments.py   # should complete in ~15 minutes, exit 0
+```
+
+---
+
+### [EXPERIMENTS.md — new] Experiment reproduction guide created
+
+**What changed:** Created `EXPERIMENTS.md` at the repo root describing
+Phase 1 and Phase 2 experiments, the single-command reproduction path,
+a pointer table (experiment → script → log → reported numbers), and the
+reproducibility statement for the LLM generation step.
+
+---
+
+### [README.md] Repository map added near top
+
+**What changed:** Added a "Repository map" section immediately below the
+existing reviewer note. One line per top-level component with pointers to
+EXPERIMENTS.md and CONTRIBUTIONS.md. Also updated the stale package layout
+block to reflect all 10 examples and the new `logs/` and `results/` structure.
+
+---
+
+### [logs/ — new] Canonical run logs committed as submission deliverable
+
+**What changed:** Added `logs/` directory with per-step logs and
+`logs/summary.md` from the canonical `python run_experiments.py` run.
+
+**Why:** The submission requirements explicitly ask for "corresponding log
+files." The `.gitignore` was updated to allow `logs/` contents.
+
+---
+
 ## Phase 1
 
 ### [examples/01–05 — data] Synthetic datasets created for examples missing CSVs

@@ -1,0 +1,8 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/03_credit_fraud_multitable/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/examples/03_credit_fraud_multitable/converted_dataops.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/03_credit_fraud_multitable
+RETURNCODE: 0
+--- STDOUT ---
+{"original_metric": 0.9675925925925927, "converted_metric": 0.9675925925925927}
+
+--- STDERR ---
+

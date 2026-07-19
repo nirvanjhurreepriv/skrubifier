@@ -1,0 +1,19 @@
+CMD: /Users/nirvanjhurree19/Desktop/skrubifier/.venv/bin/python /Users/nirvanjhurree19/Desktop/skrubifier/examples/07_random_acts_of_pizza/harness.py /Users/nirvanjhurree19/Desktop/skrubifier/results/llm_conversions/07_random_acts_of_pizza.py
+CWD: /Users/nirvanjhurree19/Desktop/skrubifier/examples/07_random_acts_of_pizza
+RETURNCODE: 1
+--- STDOUT ---
+
+--- STDERR ---
+Traceback (most recent call last):
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/examples/07_random_acts_of_pizza/harness.py", line 42, in <module>
+    ns = runpy.run_path(converted_path, run_name="__converted__")
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 269, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 96, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/Users/nirvanjhurree19/Desktop/skrubifier/results/llm_conversions/07_random_acts_of_pizza.py", line 133, in <module>
+    X = skrub.concat([title_vectorized, text_vectorized, numeric], axis=1).skb.mark_as_X()
+AttributeError: module 'skrub' has no attribute 'concat'
+

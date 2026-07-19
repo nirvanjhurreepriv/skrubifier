@@ -2,7 +2,8 @@
 Converted from examples/06_allstate_claims_severity/source_pipeline.py
 
 Conversion of the stacking ensemble (StackingRegressor -> DataOps branches):
-- No direct skrub primitive for StackingRegressor.
+- No DataOps-native OOF stacking primitive in skrub 0.9; this script uses
+  a decomposed-branch approach (see leakage note below).
 - Three `.skb.apply()` branches (XGBoost, Ridge, ExtraTrees) each use their
   own TableVectorizer instance over the full feature set.
 - Their Series predictions are wrapped in DataFrames via `.skb.apply_func()`
@@ -16,13 +17,13 @@ Conversion of the stacking ensemble (StackingRegressor -> DataOps branches):
 
 Note on leakage vs sklearn StackingRegressor:
   sklearn's StackingRegressor computes OOF predictions via internal CV so the
-  meta-learner never sees training-set predictions. The DataOps version
-  applies all three branches on the same training data -> mild leakage for the
-  meta-learner. This is a documented limitation; a fully-clean DataOps version
-  would need `skb.cross_validate`-style mechanics that are more complex and
-  not documented in SKRUB_API_REFERENCE. For metric comparison on a held-out
-  test split, both approaches still produce valid (if differently-calibrated)
-  predictions.
+  meta-learner never sees training-set predictions. This decomposed DataOps
+  version applies all three branches on the same training data -> mild leakage
+  for the meta-learner (delta=0.037, documented L1 limitation).
+  Alternative: wrapping the intact StackingRegressor in a single
+  `.skb.apply(stacker, y=y)` preserves sklearn's OOF CV exactly (delta=0.000),
+  as shown in the cross-model comparison (WRITEUP.md §8.1). This decomposed
+  version is kept as the more explicit DataOps idiom.
 """
 import numpy as np
 import pandas as pd

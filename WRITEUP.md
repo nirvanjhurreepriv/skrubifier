@@ -170,14 +170,16 @@ Passing examples (metrics are original vs. converted):
 Root cause: `sklearn.ensemble.StackingRegressor` trains its meta-learner on
 **out-of-fold (OOF)** predictions — each base estimator is cross-validated so
 the training instances it sees during meta-learner fitting were held out during
-each base estimator's training. The DataOps version, which has no OOF stacking
-primitive, fits all three base estimators on the full training set and then feeds
-those same in-fold predictions to the meta-learner. The meta-learner therefore
-sees slightly overfit base-model outputs, making it a mildly easier problem than
-the original — the converted model appears slightly worse on unseen test data
-because the meta-learner overfitted to inflated in-fold predictions. Delta 0.037
-exceeds tolerance 0.020. This is a genuine framework limitation for this
-pipeline class, not a bug in the conversion code (see §6 for full details).
+each base estimator's training. Phase 1's native-decomposition DataOps version
+has no DataOps-native OOF primitive: it fits all three base estimators on the
+full training set and then feeds those same in-fold predictions to the
+meta-learner. The meta-learner therefore sees slightly overfit base-model
+outputs, making it a mildly easier problem than the original — the converted
+model appears slightly worse on unseen test data because the meta-learner
+overfitted to inflated in-fold predictions. Delta 0.037 exceeds tolerance 0.020.
+This is a documented limitation of the native-decomposition approach, not a
+bug in the conversion code. Note: wrapping the intact `StackingRegressor` in
+`.skb.apply()` avoids this entirely (delta=0.000); see §7 L1 and §8.1.
 
 ---
 
@@ -355,14 +357,23 @@ unavailable and `TextEncoder` cannot be used.
 These are structural limitations of the framework as built — not bugs that were
 fixed, but constraints the grader should be aware of.
 
-### L1 — No OOF stacking primitive in skrub 0.9 (example 06)
+### L1 — No native DataOps OOF stacking primitive in skrub 0.9 (example 06)
 
 `sklearn.ensemble.StackingRegressor` trains its meta-learner on out-of-fold
-predictions, avoiding overfitting. skrub 0.9 has no equivalent DAG primitive
-for OOF prediction — all branches see the full training set. The result is a
-predictable but irreducible quality gap when converting stacking ensembles:
-delta 0.037 vs tolerance 0.020 on example 06. The source is noted in
-`CHANGELOG.md` and `results/evaluation_table.md`.
+predictions, avoiding overfitting. skrub 0.9 has no DataOps-native primitive
+for OOF prediction: a *decomposed* conversion (separate `.skb.apply()` branches
+fed into a meta-learner) trains all branches on the full training set, producing
+mild leakage. The result is a predictable quality gap for this
+native-decomposition approach: delta 0.037 vs tolerance 0.020 on example 06.
+
+This limitation is specific to *native DataOps decomposition*. Wrapping the
+intact `StackingRegressor` in a single `.skb.apply(stacker, y=y)` call
+delegates OOF CV to sklearn internally, achieving delta=0.000 — confirmed in
+the cross-model comparison (§8.1). Phase 1's hand-written conversion uses the
+decomposed approach as the more explicit DataOps idiom; §8.1 notes that
+general-purpose LLMs independently chose the simpler wrap-in-apply strategy
+and achieved a better metric match. The source is noted in `CHANGELOG.md` and
+`results/evaluation_table.md`.
 
 ### L2 — Row-wise inline lambdas invisible to the AST analyzer
 
@@ -592,7 +603,10 @@ do not exist in skrub 0.9 and the repair loop could not recover within 3 rounds.
 
 The two general models wrapped sklearn's `StackingRegressor` in a single
 `.skb.apply()` call — the pragmatic correct approach — preserving the sklearn OOF
-CV semantics and achieving delta=0.000.
+CV semantics and achieving delta=0.000. This is a better metric match than
+Phase 1's hand-written decomposition (delta=0.037). Phase 1 is deliberately
+kept as-is: the native-decomposition approach is a valid DataOps idiom and
+the metric gap is the documented L1 limitation (§7 "Limitations").
 
 **Implication:** Code-specialisation can be a liability on narrow API-knowledge
 tasks. Models that know more about coding patterns may over-engineer the conversion

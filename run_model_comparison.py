@@ -493,7 +493,7 @@ def write_markdown(results: dict) -> None:
             if r.get("dynamic_ok"):
                 orig = r.get("original_metric", float("nan"))
                 cmet = r.get("converted_metric", float("nan"))
-                row += f" **Pass** ({orig:.3f}→{cmet:.3f}) |"
+                row += f" **Pass** ({orig:.3f}->{cmet:.3f}) |"
             else:
                 cause = r.get("failure_cause") or "error"
                 row += f" Fail(*{cause}*) |"
@@ -514,7 +514,7 @@ def write_markdown(results: dict) -> None:
         for pipeline, difficulty in PIPELINES:
             r = results.get(model, {}).get(pipeline, {})
             att   = str(r.get("attempts", "—"))
-            sok   = "✓" if r.get("static_ok") else "✗"
+            sok   = "Pass" if r.get("static_ok") else "Fail"
             dyn   = "Pass" if r.get("dynamic_ok") else "Fail"
             orig  = f"{r['original_metric']:.4f}"  if "original_metric"  in r else "—"
             cmet  = f"{r['converted_metric']:.4f}" if "converted_metric" in r else "—"

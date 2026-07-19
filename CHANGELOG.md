@@ -137,7 +137,7 @@ python run_experiments.py   # should complete in ~15 minutes, exit 0
 
 **What changed:** Created `EXPERIMENTS.md` at the repo root describing
 Phase 1 and Phase 2 experiments, the single-command reproduction path,
-a pointer table (experiment → script → log → reported numbers), and the
+a pointer table (experiment -> script -> log -> reported numbers), and the
 reproducibility statement for the LLM generation step.
 
 ---

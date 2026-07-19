@@ -51,13 +51,13 @@ formula `max(0.02, 0.03×|orig|)` as the main Phase 2 run.
 
 ## Per-pipeline matrix
 
-Cell format: **Pass** (orig→conv) or Fail(*cause*)
+Cell format: **Pass** (orig->conv) or Fail(*cause*)
 
 | Pipeline (difficulty) | qwen3-coder | gpt-oss-120b | devstral-123b | glm-4.7 |
 |---|---|---|---|---|
-| 01_titanic (easy) | **Pass** (0.719→0.711) | **Pass** (0.719→0.711) | **Pass** (0.719→0.711) | **Pass** (0.719→0.711) |
-| 03_credit_fraud_multitable (medium) | **Pass** (0.968→0.968) | **Pass** (0.968→0.968) | **Pass** (0.968→0.968) | **Pass** (0.968→0.968) |
-| 06_allstate_claims_severity (hard) | Fail(*hallucinated-API*) | **Pass** (0.518→0.518) | Fail(*hallucinated-API*) | **Pass** (0.518→0.518) |
+| 01_titanic (easy) | **Pass** (0.719->0.711) | **Pass** (0.719->0.711) | **Pass** (0.719->0.711) | **Pass** (0.719->0.711) |
+| 03_credit_fraud_multitable (medium) | **Pass** (0.968->0.968) | **Pass** (0.968->0.968) | **Pass** (0.968->0.968) | **Pass** (0.968->0.968) |
+| 06_allstate_claims_severity (hard) | Fail(*hallucinated-API*) | **Pass** (0.518->0.518) | Fail(*hallucinated-API*) | **Pass** (0.518->0.518) |
 
 ---
 
@@ -67,33 +67,33 @@ Cell format: **Pass** (orig→conv) or Fail(*cause*)
 
 | Pipeline | Attempts | Static OK | Dynamic | Orig | Conv | Delta | Tol | Cause |
 |----------|----------|-----------|---------|------|------|-------|-----|-------|
-| 01_titanic | 1 | ✓ | Pass | 0.7190 | 0.7108 | 0.0082 | 0.022 | — |
-| 03_credit_fraud_multitable | 1 | ✓ | Pass | 0.9676 | 0.9676 | 0.0000 | 0.029 | — |
-| 06_allstate_claims_severity | 4 | ✗ | Fail | — | — | — | — | hallucinated-API |
+| 01_titanic | 1 | Pass | Pass | 0.7190 | 0.7108 | 0.0082 | 0.022 | — |
+| 03_credit_fraud_multitable | 1 | Pass | Pass | 0.9676 | 0.9676 | 0.0000 | 0.029 | — |
+| 06_allstate_claims_severity | 4 | Fail | Fail | — | — | — | — | hallucinated-API |
 
 ### gpt-oss-120b (`openai-gpt-oss-120b`)
 
 | Pipeline | Attempts | Static OK | Dynamic | Orig | Conv | Delta | Tol | Cause |
 |----------|----------|-----------|---------|------|------|-------|-----|-------|
-| 01_titanic | 1 | ✓ | Pass | 0.7190 | 0.7108 | 0.0082 | 0.022 | — |
-| 03_credit_fraud_multitable | 1 | ✓ | Pass | 0.9676 | 0.9676 | 0.0000 | 0.029 | — |
-| 06_allstate_claims_severity | 1 | ✓ | Pass | 0.5180 | 0.5180 | 0.0000 | 0.020 | — |
+| 01_titanic | 1 | Pass | Pass | 0.7190 | 0.7108 | 0.0082 | 0.022 | — |
+| 03_credit_fraud_multitable | 1 | Pass | Pass | 0.9676 | 0.9676 | 0.0000 | 0.029 | — |
+| 06_allstate_claims_severity | 1 | Pass | Pass | 0.5180 | 0.5180 | 0.0000 | 0.020 | — |
 
 ### devstral-123b (`devstral-2-123b-instruct-2512`)
 
 | Pipeline | Attempts | Static OK | Dynamic | Orig | Conv | Delta | Tol | Cause |
 |----------|----------|-----------|---------|------|------|-------|-----|-------|
-| 01_titanic | 1 | ✓ | Pass | 0.7190 | 0.7108 | 0.0082 | 0.022 | — |
-| 03_credit_fraud_multitable | 1 | ✓ | Pass | 0.9676 | 0.9676 | 0.0000 | 0.029 | — |
-| 06_allstate_claims_severity | 4 | ✗ | Fail | — | — | — | — | hallucinated-API |
+| 01_titanic | 1 | Pass | Pass | 0.7190 | 0.7108 | 0.0082 | 0.022 | — |
+| 03_credit_fraud_multitable | 1 | Pass | Pass | 0.9676 | 0.9676 | 0.0000 | 0.029 | — |
+| 06_allstate_claims_severity | 4 | Fail | Fail | — | — | — | — | hallucinated-API |
 
 ### glm-4.7 (`glm-4.7`)
 
 | Pipeline | Attempts | Static OK | Dynamic | Orig | Conv | Delta | Tol | Cause |
 |----------|----------|-----------|---------|------|------|-------|-----|-------|
-| 01_titanic | 1 | ✓ | Pass | 0.7190 | 0.7108 | 0.0082 | 0.022 | — |
-| 03_credit_fraud_multitable | 1 | ✓ | Pass | 0.9676 | 0.9676 | 0.0000 | 0.029 | — |
-| 06_allstate_claims_severity | 1 | ✓ | Pass | 0.5180 | 0.5180 | 0.0000 | 0.020 | — |
+| 01_titanic | 1 | Pass | Pass | 0.7190 | 0.7108 | 0.0082 | 0.022 | — |
+| 03_credit_fraud_multitable | 1 | Pass | Pass | 0.9676 | 0.9676 | 0.0000 | 0.029 | — |
+| 06_allstate_claims_severity | 1 | Pass | Pass | 0.5180 | 0.5180 | 0.0000 | 0.020 | — |
 
 ---
 

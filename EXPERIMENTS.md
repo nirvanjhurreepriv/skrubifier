@@ -19,7 +19,7 @@ two metrics agree within a tolerance of `max(0.02, 0.03 × |original_metric|)`.
 Results are in `results/evaluation_table.md`.
 
 **Phase 2 — Automated LLM conversion (two runs).**
-The Skrubifier pipeline (analyzer → LLM → validator + repair loop) was run
+The Skrubifier pipeline (analyzer -> LLM -> validator + repair loop) was run
 on all 10 source pipelines.  The LLM (GWDG SAIA, model `qwen3-coder-next`) was
 called via `python -m skrubifier convert` with `--backend gwdg`.  Two full runs
 were made, with prompt and framework fixes applied between runs.  The generated

@@ -10,9 +10,11 @@ match the real dataset schema exactly. Loss values are log-normally distributed.
 
 The original source pipeline uses sklearn's StackingRegressor (which computes
 OOF base predictions via internal CV); the converted DataOps script uses
-in-fold base predictions for the meta-learner. This known semantic difference
-means the converted metric may differ slightly more than the usual tolerance —
-documented in converted_dataops.py.
+in-fold base predictions for the meta-learner (native-decomposition approach).
+This known semantic difference means the converted metric may differ slightly
+more than the usual tolerance — documented in converted_dataops.py. An
+alternative wrap-in-apply conversion (.skb.apply(StackingRegressor)) preserves
+OOF semantics and achieves delta=0.000 (see WRITEUP.md §8.1).
 """
 import json
 import os

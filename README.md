@@ -14,11 +14,13 @@
 | `examples/0N_name/` | One pipeline per example: `source_pipeline.py`, `converted_dataops.py`, `harness.py`, `make_data.py` (reproducible data generator, seed=42) |
 | `examples/04_nyc_taxi_fare/data/` | Committed real parquet data (NYC Taxi; only real dataset) |
 | `results/` | `evaluation_table.md` (Phase 1), `phase2_evaluation_table.md` (Phase 2), LLM-generated scripts in `llm_conversions/` (Run 2) and `llm_conversions_run1/` (Run 1), adapted Phase 2 harnesses |
+| `results/model_comparison/` | Cross-model results: `model_comparison.md` (table + matrix + discussion), per-model generated scripts, `fig_model_comparison.pdf` |
 | `tests/` | Offline unit tests for the Skrubifier framework (no network, no skrub execution) |
 | `run_experiments.py` | Single-command runner: regenerates data → runs tests → runs all harnesses → writes `logs/` |
+| `run_model_comparison.py` | Cross-model comparison runner: converts 3 pipelines (easy/medium/hard) across 4 open-weight models, writes `results/model_comparison/` |
 | `logs/` | Per-step log files and `summary.md` from the canonical run; committed as submission deliverable |
 | `EXPERIMENTS.md` | Full reproduction guide, pointer table, and LLM-step reproducibility statement |
-| `CONTRIBUTIONS.md` | (if present) Contribution log |
+| `CONTRIBUTIONS.md` | Per-member contribution attribution with pointers to specific files |
 | `WRITEUP.md` | Project overview, architecture, results, API bugs found, limitations |
 | `CHANGELOG.md` | Change log: every non-trivial modification with what, why, how-to-verify |
 

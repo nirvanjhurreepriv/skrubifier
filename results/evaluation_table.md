@@ -70,6 +70,9 @@ against `converted_dataops.py`. Tolerance = `max(0.02, 0.03 * |original_metric|)
 
 ## Phase 2 Status
 
-**Blocked**: Neither `GWDG_API_KEY` nor `ANTHROPIC_API_KEY` is set in the
-environment. Phase 2 (automated LLM conversion) cannot proceed. The evaluation
-table above covers Phase 1 (hand-written reference pipelines) only.
+Phase 2 (automated LLM conversion via GWDG SAIA, model `qwen3-coder-next`) has
+been completed. **Final result: 6/10 pipelines pass dynamic validation.**
+
+Full results, per-example pass/fail breakdown, failure attribution, and the
+fix-by-fix progression (Run 1 → Run 2 → Fix 3) are in
+[`results/phase2_evaluation_table.md`](phase2_evaluation_table.md).

@@ -38,7 +38,7 @@ under `results/llm_conversions/`.  Run 1 artifacts are under
 git clone <repo-url>
 cd skrubifier
 python -m venv .venv && source .venv/bin/activate
-pip install skrub scikit-learn xgboost pandas numpy pytest openai
+pip install skrub scikit-learn xgboost pandas numpy pytest openai category_encoders pyarrow
 python run_experiments.py
 ```
 

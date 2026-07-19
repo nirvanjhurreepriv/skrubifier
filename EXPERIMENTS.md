@@ -125,3 +125,63 @@ Pass/fail counts may differ slightly from the reported Run 2 results
 (6/10 dynamic pass) because the LLM output is non-deterministic.  The
 framework fixes (prompts.py, validator.py, analyzer.py) are all committed
 and will apply to a fresh generation run.
+
+---
+
+## Cross-model comparison sweep
+
+### What it is
+
+A single-run, three-pipeline probe comparing four open-weight models on the
+easy / medium / hard representative pipelines.  Outputs:
+
+| Path | Contents |
+|------|----------|
+| `results/model_comparison/<model_slug>/0N_name.py` | Generated scripts (reproducible artifact) |
+| `results/model_comparison/raw_results.json` | Per-(model, pipeline) metrics and failure causes |
+| `results/model_comparison.md` | Summary table, per-pipeline matrix, discussion |
+| `results/model_comparison/fig_model_comparison.pdf` | Grouped bar chart |
+
+### Models used (2026-07-19 run)
+
+| Model slug | Full model ID | Type |
+|------------|---------------|------|
+| `qwen3_coder_next` | `qwen3-coder-next` | code-spec. |
+| `openai_gpt_oss_120b` | `openai-gpt-oss-120b` | general |
+| `devstral_2_123b_instruct_2512` | `devstral-2-123b-instruct-2512` | code-spec. |
+| `glm_4_7` | `glm-4.7` | general |
+
+`llama-3.3-70b-instruct` was not live on the endpoint at run time; devstral
+substitutes as a second code-specialist from a different family.
+
+### Pipelines used
+
+| Pipeline | Difficulty |
+|----------|-----------|
+| `01_titanic` | easy |
+| `03_credit_fraud_multitable` | medium |
+| `06_allstate_claims_severity` | hard |
+
+### How to re-run (requires GWDG_API_KEY)
+
+```bash
+export GWDG_API_KEY=<your-key>
+python run_model_comparison.py
+```
+
+Total wall-clock time: ~7 minutes (4 models × 3 pipelines, up to 3 repair
+rounds each, plus dynamic harness evaluation).
+
+### Reproducibility caveat
+
+Fresh re-generation is **not bit-reproducible** — the LLM output differs
+across runs.  The saved scripts in `results/model_comparison/` are the
+committed artifact.  To re-validate those saved scripts deterministically
+(without calling the LLM), run each saved script through the corresponding
+harness directly:
+
+```bash
+# Example: re-validate the gpt-oss-120b output for example 01
+cd examples/01_titanic
+python harness.py ../../results/model_comparison/openai_gpt_oss_120b/01_titanic.py
+```

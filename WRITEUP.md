@@ -553,6 +553,63 @@ must be fixed simultaneously. Both are genuine limitations, not evaluation artif
 
 ---
 
+## 8.1 Cross-model comparison (indicative three-pipeline probe)
+
+To test whether the dominant failure mode (API hallucination) is model-specific or
+general, the same three-pipeline subset (easy / medium / hard) was run through the
+converter with four open-weight models via the GWDG SAIA endpoint.
+
+**Models tested:** qwen3-coder-next (code-spec., baseline), openai-gpt-oss-120b
+(general), devstral-2-123b-instruct-2512 (code-spec., substitutes llama-3.3-70b
+which was not live), glm-4.7 (general).
+
+### Summary table
+
+| Model | Type | Dynamic pass /3 | Dominant failure cause |
+|-------|------|----------------|------------------------|
+| qwen3-coder-next | code-spec. | 2/3 | hallucinated-API |
+| openai-gpt-oss-120b | general | 3/3 | — |
+| devstral-2-123b | code-spec. | 2/3 | hallucinated-API |
+| glm-4.7 | general | 3/3 | — |
+
+### Per-pipeline matrix
+
+| Pipeline (difficulty) | qwen3-coder | gpt-oss-120b | devstral-123b | glm-4.7 |
+|-----------------------|-------------|--------------|---------------|---------|
+| 01_titanic (easy) | **Pass** | **Pass** | **Pass** | **Pass** |
+| 03_credit_fraud (medium) | **Pass** | **Pass** | **Pass** | **Pass** |
+| 06_allstate (hard) | Fail | **Pass** | Fail | **Pass** |
+
+### Key finding
+
+All four models solve easy and medium pipelines (4/4 each). The hard pipeline
+(06_allstate — stacking ensemble) divides them cleanly.
+
+The two code-specialist models attempted to implement stacking *natively* in DataOps,
+hallucinating non-existent API methods: `xgb.skb.fit(y=y)`, `._estimator` attribute
+access (qwen3-coder), and `TableVectorizer(numeric_imputer=...)` (devstral). These
+do not exist in skrub 0.9 and the repair loop could not recover within 3 rounds.
+
+The two general models wrapped sklearn's `StackingRegressor` in a single
+`.skb.apply()` call — the pragmatic correct approach — preserving the sklearn OOF
+CV semantics and achieving delta=0.000.
+
+**Implication:** Code-specialisation can be a liability on narrow API-knowledge
+tasks. Models that know more about coding patterns may over-engineer the conversion
+by attempting DataOps primitives that do not exist yet. Instruction-following
+quality and conservatism about unfamiliar API surfaces appears more predictive of
+success than code-specialist fine-tuning for this task.
+
+The API-hallucination failure mode is not model-specific but is *concentrated* in
+code-specialist models on the hardest pipeline. It is not a universal blocker — the
+easy and medium pipelines are solved universally, and general models avoid it on the
+hard pipeline via a simpler strategy.
+
+Full results, generated scripts, and a bar chart are in
+`results/model_comparison/` and `results/model_comparison.md`.
+
+---
+
 ## 9. How to reproduce
 
 ### Environment setup

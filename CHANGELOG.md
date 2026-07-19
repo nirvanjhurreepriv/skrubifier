@@ -5,6 +5,53 @@ records what, why, and how to verify. See `WRITEUP.md` for the project overview.
 
 ---
 
+## Cross-model comparison experiment (2026-07-19)
+
+### [run_model_comparison.py — new] Sweep script comparing four models on three pipelines
+
+**What changed:** Added `run_model_comparison.py`, which runs the Skrubifier
+converter on the easy (01_titanic), medium (03_credit_fraud_multitable), and
+hard (06_allstate_claims_severity) pipelines using four open-weight models via
+the GWDG SAIA endpoint: qwen3-coder-next (baseline), openai-gpt-oss-120b,
+devstral-2-123b-instruct-2512, and glm-4.7. Same prompt, same repair-loop
+settings, same tolerance formula as Phase 2.
+
+**Why:** To test whether API-hallucination failure (the dominant Phase 2 failure
+mode) is model-specific or general across model families and specialisations.
+
+**Results (2026-07-19 canonical run):**
+
+| Model | Type | Pass/3 | Dominant failure cause |
+|-------|------|--------|------------------------|
+| qwen3-coder-next | code-spec. | 2/3 | hallucinated-API |
+| openai-gpt-oss-120b | general | 3/3 | — |
+| devstral-2-123b | code-spec. | 2/3 | hallucinated-API |
+| glm-4.7 | general | 3/3 | — |
+
+Key finding: easy and medium pipelines are solved by all four models. The hard
+pipeline (stacking ensemble) reveals a code-specialist liability: both
+code-specialist models hallucinated non-existent DataOps stacking primitives
+(`xgb.skb.fit(y=y)`, `TableVectorizer(numeric_imputer=...)`), while the general
+models wrapped sklearn's StackingRegressor in `.skb.apply()` and achieved
+delta=0.000.
+
+**Outputs:** `results/model_comparison/<model>/0N_name.py`,
+`results/model_comparison.md`, `results/model_comparison/fig_model_comparison.pdf`
+
+**How to verify:** `GWDG_API_KEY=... python run_model_comparison.py`
+(non-deterministic; re-validates saved scripts via harnesses directly).
+
+### [WRITEUP.md §8.1 — new] Cross-model comparison subsection added
+
+Summarises the sweep results and the code-specialist liability finding.
+
+### [EXPERIMENTS.md — updated] Cross-model sweep section added
+
+Documents how to reproduce the sweep, the models selected, which three pipelines
+and why, and the deterministic re-validation path.
+
+---
+
 ## Reproducibility (2026-07-19)
 
 ### [examples/0N_name/make_data.py — new] Deterministic data-generation scripts added for all 9 synthetic examples

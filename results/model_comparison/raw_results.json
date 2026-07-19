@@ -1,0 +1,170 @@
+{
+  "qwen3-coder-next": {
+    "01_titanic": {
+      "difficulty": "easy",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.7190154922538731,
+      "converted_metric": 0.7107696151924039,
+      "delta": 0.008245877061469176,
+      "tol": 0.02157046476761619,
+      "failure_cause": null
+    },
+    "03_credit_fraud_multitable": {
+      "difficulty": "medium",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.9675925925925927,
+      "converted_metric": 0.9675925925925927,
+      "delta": 0.0,
+      "tol": 0.029027777777777777,
+      "failure_cause": null
+    },
+    "06_allstate_claims_severity": {
+      "difficulty": "hard",
+      "attempts": 4,
+      "static_ok": false,
+      "conv_success": false,
+      "conv_error": null,
+      "validation_detail": "Runtime error when executing the converted script (exit code 1):\nn update\n    _check_call(\n  File \"/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/xgboost/core.py\", line 324, in _check_call\n    raise XGBoostError(py_str(_LIB.XGBGetLastError()))\nxgboost.core.XGBoostError: [20:43:18] /Users/runner/work/xgboost/xgboost/src/objective/init_estimation.h:22: Check failed: info.labels.Shape(0) == info.num_row_ (0 vs. 2000) : Invalid shape of labels.\nStack trace:\n  [bt] (0) 1   libxgboost.dylib                    0x000000011278e545 dmlc::LogMessageFatal::~LogMessageFatal() + 117\n  [bt] (1) 2   libxgboost.dylib                    0x0000000112acedfc xgboost::obj::CheckInitInputs(xgboost::MetaInfo const&) + 220\n  [bt] (2) 3   libxgboost.dylib                    0x0000000112ad208a xgboost::obj::FitInterceptGlmLike::InitEstimation(xgboost::MetaInfo const&, xgboost::linalg::Tensor<float, 1>*) const + 42\n  [bt] (3) 4   libxgboost.dylib                    0x0000000112a606c0 xgboost::LearnerImpl::UpdateOneIter(int, std::__1::shared_ptr<xgboost::DMatrix>) + 448\n  [bt] (4) 5   libxgboost.dylib                    0x00000001127b81b7 XGBoosterUpdateOneIter + 135\n  [bt] (5) 6   libffi.dylib                        0x00007ff812b51892 ffi_call_unix64 + 82\n  [bt] (6) 7   ???                                 0x00007ff7bfd7c0a0 0x0 + 140702052237472\n\n\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/nirvanjhurree19/Desktop/skrubifier/examples/06_allstate_claims_severity/tmpwnj_qmyz.py\", line 32, in <module>\n    xgb = vectorized.skb.apply(XGBRegressor(n_estimators=100, max_depth=5, learning_rate=0.1,\n  File \"/Users/nirvanjhurree19/Desktop/skrubifier/.venv/lib/python3.10/site-packages/skrub/_data_ops/_data_ops.py\", line 418, in checked_call\n    raise RuntimeError(\nRuntimeError: Evaluation of 'apply()' failed.\nYou can see the full traceback above. The error message was:\nxgboost.core.XGBoostError: [20:43:18] /Users/runner/work/xgboost/xgboost/src/objective/init_estimation.h:22: Check failed: info.labels.Shape(0) == info.num_row_ (0 vs. 2000) : Invalid shape of labels.\nStack trace:\n  [bt] (0) 1   libxgboost.dylib                    0x000000011278e545 dmlc::LogMessageFatal::~LogMessageFatal() + 117\n  [bt] (1) 2   libxgboost.dylib                    0x0000000112acedfc xgboost::obj::CheckInitInputs(xgboost::MetaInfo const&) + 220\n  [bt] (2) 3   libxgboost.dylib                    0x0000000112ad208a xgboost::obj::FitInterceptGlmLike::InitEstimation(xgboost::MetaInfo const&, xgboost::linalg::Tensor<float, 1>*) const + 42\n  [bt] (3) 4   libxgboost.dylib                    0x0000000112a606c0 xgboost::LearnerImpl::UpdateOneIter(int, std::__1::shared_ptr<xgboost::DMatrix>) + 448\n  [bt] (4) 5   libxgboost.dylib                    0x00000001127b81b7 XGBoosterUpdateOneIter + 135\n  [bt] (5) 6   libffi.dylib                        0x00007ff812b51892 ffi_call_unix64 + 82\n  [bt] (6) 7   ???                                 0x00007ff7bfd7c0a0 0x0 + 140702052237472",
+      "dynamic_ok": false,
+      "failure_cause": "hallucinated-API"
+    }
+  },
+  "openai-gpt-oss-120b": {
+    "01_titanic": {
+      "difficulty": "easy",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.7190154922538731,
+      "converted_metric": 0.7107696151924039,
+      "delta": 0.008245877061469176,
+      "tol": 0.02157046476761619,
+      "failure_cause": null
+    },
+    "03_credit_fraud_multitable": {
+      "difficulty": "medium",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.9675925925925927,
+      "converted_metric": 0.9675925925925927,
+      "delta": 0.0,
+      "tol": 0.029027777777777777,
+      "failure_cause": null
+    },
+    "06_allstate_claims_severity": {
+      "difficulty": "hard",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.5179514662541602,
+      "converted_metric": 0.5179514662541602,
+      "delta": 0.0,
+      "tol": 0.02,
+      "failure_cause": null
+    }
+  },
+  "devstral-2-123b-instruct-2512": {
+    "01_titanic": {
+      "difficulty": "easy",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.7190154922538731,
+      "converted_metric": 0.7107696151924039,
+      "delta": 0.008245877061469176,
+      "tol": 0.02157046476761619,
+      "failure_cause": null
+    },
+    "03_credit_fraud_multitable": {
+      "difficulty": "medium",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.9675925925925927,
+      "converted_metric": 0.9675925925925927,
+      "delta": 0.0,
+      "tol": 0.029027777777777777,
+      "failure_cause": null
+    },
+    "06_allstate_claims_severity": {
+      "difficulty": "hard",
+      "attempts": 4,
+      "static_ok": false,
+      "conv_success": false,
+      "conv_error": null,
+      "validation_detail": "Runtime error when executing the converted script (exit code 1):\nTraceback (most recent call last):\n  File \"/Users/nirvanjhurree19/Desktop/skrubifier/examples/06_allstate_claims_severity/tmppgux0c1q.py\", line 23, in <module>\n    preprocessor = skrub.TableVectorizer(\nTypeError: TableVectorizer.__init__() got an unexpected keyword argument 'numeric_imputer'",
+      "dynamic_ok": false,
+      "failure_cause": "hallucinated-API"
+    }
+  },
+  "glm-4.7": {
+    "01_titanic": {
+      "difficulty": "easy",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.7190154922538731,
+      "converted_metric": 0.7107696151924039,
+      "delta": 0.008245877061469176,
+      "tol": 0.02157046476761619,
+      "failure_cause": null
+    },
+    "03_credit_fraud_multitable": {
+      "difficulty": "medium",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.9675925925925927,
+      "converted_metric": 0.9675925925925927,
+      "delta": 0.0,
+      "tol": 0.029027777777777777,
+      "failure_cause": null
+    },
+    "06_allstate_claims_severity": {
+      "difficulty": "hard",
+      "attempts": 1,
+      "static_ok": true,
+      "conv_success": true,
+      "conv_error": null,
+      "validation_detail": "static and runtime checks passed",
+      "dynamic_ok": true,
+      "original_metric": 0.5179514662541602,
+      "converted_metric": 0.5179514662541602,
+      "delta": 0.0,
+      "tol": 0.02,
+      "failure_cause": null
+    }
+  }
+}

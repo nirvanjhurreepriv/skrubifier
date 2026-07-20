@@ -5,7 +5,7 @@ Adapted directly from cells 19-25 of the source tutorial notebook
 (exercise_v1_1.ipynb) rather than purely LLM-generated — included as a
 high-confidence anchor example since it reflects skrub's own reference
 implementation of this exact pipeline, and exercises three patterns the
-other 3 examples don't:
+earlier examples don't:
 
 1. `.skb.apply_func(func)` for stateless functions (pd.read_parquet,
    pd.to_datetime, np.cos/np.sin/np.sqrt/np.arcsin) instead of eager calls.

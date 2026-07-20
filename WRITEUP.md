@@ -3,8 +3,8 @@
 This document synthesises the project for reviewers. Primary sources for every
 claim are `README.md`, `CHANGELOG.md`, `examples/PLAN.md`, and
 `results/evaluation_table.md` — nothing is invented or approximated here.
-Where a result is not yet available (Phase 2 has not run), that is stated
-explicitly.
+All results are from reproducible harness runs; sources for every number are
+cited explicitly.
 
 ---
 

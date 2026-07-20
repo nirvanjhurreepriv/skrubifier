@@ -1,13 +1,14 @@
-# Remaining pipelines to convert (5–10)
+# Pipeline selection and planning notes (examples 1–10)
 
-4 of 10 are now fully worked (see `examples/01_titanic`, `02_house_prices_xgb`,
-`03_credit_fraud_multitable`, `04_nyc_taxi_fare`). #4 is notable: it's built
-from a real, official skrub DataOps tutorial notebook (not MLE-Bench/Kaggle),
-using verified reference syntax rather than LLM-guessed conversions — see its
-docstring. It also added two verified API patterns to `prompts.py` that the
-first 3 examples didn't need: `.skb.apply_func()` for stateless functions
-(replacing an earlier, unverified `skrub.deferred` guess) and
-`skrub.eval_mode()` + `.skb.if_else()` for train-only row filtering.
+All 10 pipelines are now implemented. This document records the original
+selection rationale and planning notes that guided each conversion.
+Example #4 is notable: it's built from a real, official skrub DataOps
+tutorial notebook (not MLE-Bench/Kaggle), using verified reference syntax
+rather than LLM-guessed conversions — see its docstring. It also added two
+verified API patterns to `prompts.py` that the earlier examples didn't need:
+`.skb.apply_func()` for stateless functions (replacing an earlier,
+unverified `skrub.deferred` guess) and `skrub.eval_mode()` +
+`.skb.if_else()` for train-only row filtering.
 
 Selection criteria for 5–10: cover the conversion-hazard space, not just easy
 cases — picked so each one stresses a different part of

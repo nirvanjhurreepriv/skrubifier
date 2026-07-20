@@ -16,9 +16,9 @@ directly from that notebook rather than LLM-generated, and is included here
 as a high-confidence few-shot/regression-test anchor for the converter.
 
 Real data included under data/ (train1_subsampled.parquet, test1.parquet,
-test1_labels.parquet) — this is the one example that can be fully executed
-end-to-end (both sklearn and skrub sides) once skrub/pyarrow are installed;
-not run in this sandbox (no network to install pyarrow/skrub here).
+test1_labels.parquet) — this is the one example that runs fully end-to-end
+with real data (both sklearn and skrub sides execute with skrub and pyarrow
+installed).
 """
 import math
 

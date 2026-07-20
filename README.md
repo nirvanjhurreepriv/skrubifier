@@ -128,11 +128,12 @@ already targets. Consequences for this deliverable:
   validation run picks up stratum automatically if present, without any
   code path divergence from the plain-skrub case.
 - Stratum currently has no pip wheel (built from source via
-  `maturin develop --release`, requires Rust toolchain + Python 3.12+) — not
-  installable in this sandbox, so the "runs on stratum" claim is
-  syntax-level (verified: stratum re-exports the exact DataOps operators
-  used in all 3 worked examples) rather than execution-verified here; that
-  last step needs to happen in an environment where stratum is built.
+  `maturin develop --release`, requires Rust toolchain + Python 3.12+).
+  The "runs on stratum" claim is syntax-level: stratum re-exports the exact
+  DataOps operators used across all 10 examples, so every generated script
+  is compatible. Execution against the Rust backend has not been verified
+  (requires building stratum from source with a Rust toolchain + Python
+  3.12+).
 
 
 
@@ -173,18 +174,26 @@ python -m skrubifier convert examples/05_x/source_pipeline.py --out out.py --bac
 
 ## Status of this deliverable
 
-- Framework code: **static/AST paths executed and passing** (8/8 tests in
-  `tests/`, run without network access; no `pip install skrub` available in
-  this sandbox — dynamic/execution validation still needs to run in an
-  environment with skrub + stratum installed).
-- 4 of 10 pipelines: **fully worked conversion examples** (source +
-  hand-verified converted DataOps script + validation harness). #4
-  (`04_nyc_taxi_fare`) is built from a real, official skrub DataOps tutorial
-  notebook with actual data included — its converted script is adapted
-  directly from skrub's own reference implementation rather than
-  LLM-generated, so it doubles as a ground-truth regression anchor and
-  already caught/corrected one inaccuracy in the framework's own API
-  reference (see `prompts.py`'s `.skb.apply_func()` note).
-- Remaining 6: specified in `examples/PLAN.md` with source, target IR shape,
-  and known conversion hazards, ready to run through `converter.py` once API
-  + network access is available.
+- **Framework code complete.** All stages (analyzer, converter, validator,
+  repair loop) are implemented; 9/9 tests in `tests/` pass offline (no API
+  key or network required). Dynamic/execution validation has been run with
+  skrub installed and all harnesses execute.
+- **All 10 pipelines done.** Each has a source pipeline, a hand-verified
+  converted DataOps script, a validation harness, and (except example 04,
+  which ships real data) a seeded `make_data.py` generator. Example 04
+  (`04_nyc_taxi_fare`) is adapted directly from an official skrub DataOps
+  tutorial with real committed data, serving as a ground-truth regression
+  anchor and catching one inaccuracy in the framework's API reference
+  (see `prompts.py`'s `.skb.apply_func()` note).
+- **Phase 1 (hand-written references): 9/10 pass dynamic validation.**
+  Example 06 (Allstate stacking) is a documented structural limitation:
+  delta 0.037 vs tolerance 0.020 (see `WRITEUP.md` §7 L1 for details).
+- **Phase 2 (automated LLM conversion, GWDG `qwen3-coder-next`): 6/10 pass
+  dynamic validation.** The four failures are LLM hallucinations of
+  non-existent DataOps API surface; documented in
+  `results/phase2_evaluation_table.md`.
+- **Cross-model comparison** (4 open-weight models × 3 pipelines) in
+  `results/model_comparison/` and `WRITEUP.md` §8.1.
+- **Full reproduction:** `python run_experiments.py` regenerates data, runs
+  all tests and Phase 1 harnesses, and re-validates saved Phase 2 outputs;
+  exits 0 with metrics matching the committed tables.

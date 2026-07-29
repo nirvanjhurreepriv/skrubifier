@@ -10,6 +10,6 @@ __pycache__/
 *.parquet
 !examples/04_nyc_taxi_fare/data/*.parquet
 
-# Logs are committed as a submission deliverable (graders expect them)
+# Logs are commited
 # so logs/ is NOT ignored.  Individual make_data log files are scratch.
 logs/make_data_*.log

@@ -9,8 +9,6 @@ __pycache__/
 *.csv
 *.parquet
 !examples/04_nyc_taxi_fare/data/*.parquet
-skrubifier_report.*
-skrubifier_deck.pptx
 
 # Logs are committed as a submission deliverable (graders expect them)
 # so logs/ is NOT ignored.  Individual make_data log files are scratch.
